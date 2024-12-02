@@ -10,8 +10,23 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxt/eslint": "^0.7.2",
+    "@nuxt/image": "^1.8.1",
     "nuxt": "^3.14.1592",
+    "nuxt-viewport": "2.2.0",
     "vue": "latest",
     "vue-router": "latest"
+  },
+  "trustedDependencies": [
+    "@parcel/watcher"
+  ],
+  "module": "index.ts",
+  "devDependencies": {
+    "@types/bun": "^1.1.14",
+    "sass-embedded": "^1.81.0",
+    "ipx": "^3.0.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5.7.2"
   }
 }
