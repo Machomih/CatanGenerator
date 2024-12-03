@@ -2,13 +2,13 @@
   <div class="board">
     <div v-if="boardRows.length == 0" class="loading">Loading...</div>
     <div v-else class="hex-board">
-      <NuxtImg alt="board margin" class="board-margin" src="/boards/default3-4.png"
-        sizes="sm:350px md:600px lg:1150px" />
+      <NuxtImg alt="board margin" class="board-margin" sizes="sm:350px md:600px lg:1150px" densities="x1 x2"
+               src="/boards/default3-4.png"/>
       <div class="hex-grid">
         <div v-for="(hexRow, rowIndex) in boardRows" :key="rowIndex" class="hex-row">
           <div v-for="(hex, hexIndex) in hexRow.hexes" :key="hexIndex" class="hex">
-            <NuxtImg :alt="'Hex tile: ' + hex.name" class="hex-background"
-              :src="`/hexes/${hex.name}.png` || '/default-image.png'" sizes="sm:52px md:90px lg:172px" />
+            <NuxtImg :alt="'Hex tile: ' + hex.name" :src="`/hexes/${hex.name}.png` || '/hexes/waterHex.png'"
+                     class="hex-background" sizes="sm:52px md:90px lg:172px"/>
             <div v-if="hex.number > 0" :class="`hex-number number-` + hex.number">
               <p class="number">{{ hex.number }}</p>
               <div class="bullets">
@@ -25,7 +25,7 @@
 <script lang="ts" setup>
 
 // Dealing with the result from Board API
-const { data: boardData, error } = await useFetch('/api/board')
+const {data: boardData, error} = await useFetch('/api/board')
 if (error.value) {
   console.error('Error fetching board data:', error.value)
 }
@@ -86,14 +86,7 @@ $xxl: 1536px;
       }
 
       @media screen and (min-width: $lg) {
-        margin-top: 105px;
-      }
-
-      .board-margin {
-        background-color: #EAD592;
-
-        z-index: 1;
-        /* Keeps the background behind other elements */
+        margin-top: 100px;
       }
 
       .hex-row {

@@ -1,9 +1,9 @@
 import {createMap} from "~/server/utils/Generator"
 
-export default defineEventHandler(async (event) => {
-    return createMap(boardSizes,hexMap,numberMap)
+export default defineEventHandler(async () => {
+    return createMap(boardSizes,hexArray,numberArray)
 })
 
 const boardSizes: Array<number> = [3,4,5,4,3]
-const numberMap: Map<number, number> = new Map([[2, 1], [3, 2], [4, 2], [5, 2], [6, 2], [8, 2], [9, 2], [10, 2], [11, 2], [12, 1]])
-const hexMap: Map<string, number> = new Map([["woodHex", 4], ["clayHex", 3], ["sheepHex", 4], ["wheatHex", 4], ["oreHex", 3], ["desertHex", 1]])
+const numberArray: Array<number> = [2,3,3,4,4,5,5,6,6,8,8,9,9,10,10,11,11,12]
+const hexArray: Array<string> = ["woodHex","woodHex","woodHex","woodHex","clayHex","clayHex","clayHex","sheepHex","sheepHex","sheepHex","sheepHex","wheatHex","wheatHex","wheatHex","wheatHex","oreHex","oreHex","oreHex","desertHex"]
