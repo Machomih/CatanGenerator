@@ -1,3 +1,8 @@
+import {optimizeMap} from "./Optimizator"
+
+let globalNumberArray: Array<number> = []
+let globalRowArray: Array<number> = []
+
 class HexRow {
     size: number = 0;
     hexes: Array<Hex> = [];
@@ -13,10 +18,15 @@ class Hex {
     bullets: number = 0;
 }
 
-export function createMap(rowSizes: Array<number>, hexArray: Array<string>, numberArray: Array<number>): Array<HexRow> {
+export function createMap(rowSizes: Array<number>,
+                          hexArray: Array<string>,
+                          numberArray: Array<number>,
+                          avoidAdjacentSixAndEight: boolean = false,
+                          avoidAdjacentTwoAndTwelve: boolean = false): Array<HexRow> {
     const hexRows: Array<HexRow> = [];
     const hexes: Array<Hex> = generateHexEntries(hexArray, numberArray);
 
+    globalRowArray = rowSizes
     let hexIndex = 0;
 
     for (const rowSize of rowSizes) {
@@ -30,6 +40,10 @@ export function createMap(rowSizes: Array<number>, hexArray: Array<string>, numb
         hexRows.push(hexRow);
     }
 
+    if(avoidAdjacentSixAndEight) {
+        optimizeMap(globalRowArray, globalNumberArray)
+    }
+
     return hexRows;
 }
 
@@ -38,17 +52,18 @@ function generateHexEntries(hexArray: Array<string>, numberArray: Array<number>)
     const numbers = generateRandomList(numberArray);
     const hexEntries: Array<Hex> = [];
 
+    globalNumberArray = numbers
     let numberIndex = 0;
 
-    for (const hexTile of hexTiles) {
+    for (const number of numbers) {
         const hex = new Hex();
-        hex.name = hexTile;
+        hex.number = number;
 
-        // Assign numbers, skip for "dessertHex"
-        if (hexTile === "desertHex") {
-            hex.number = 0;
+        // Assign hexTiles, add desertHex for 0
+        if (number === 0) {
+            hex.name = "desertHex";
         } else if (numberIndex < numbers.length) {
-            hex.number = numbers[numberIndex++];
+            hex.name = hexTiles[numberIndex++];
         }
         hex.bullets = getBullets(hex.number)
 
