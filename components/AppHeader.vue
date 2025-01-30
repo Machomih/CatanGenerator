@@ -1,65 +1,41 @@
 <template>
   <div>
-    <header class="header">
-      <div class="main-navbar">
-        <div class="logo">
-          <h2 class="title">
-            Catan Board Generator
-          </h2>
-        </div>
-        <div class="menu">
-          <h3 class="sub-menu">Scenarios</h3>
-          <h3 class="sub-menu">Rules</h3>
-        </div>
+    <div id="header" class="w-full h-12 md:h-16 flex flex-row items-center font-bold">
+      <div id="title" class="w-fit h-full flex flex-initial flex-nowrap text-lg md:text-2xl">
+        <ULink
+            id="title-link"
+            active-class="bg-gradient-to-r from-cyan-900 to-cyan-700"
+            class="w-full h-full pl-5 flex items-end text-center justify-center"
+            inactive-class="bg-gradient-to-r from-cyan-900 to-cyan-700"
+            to="/"
+        > Catan Board Generator
+        </ULink>
       </div>
-    </header>
+      <div id="space" class="h-12 md:h-16  flex-1 bg-gradient-to-r from-cyan-700 to to-sky-700"/>
+      <div id="nav-links" class="w-1/4 h-full flex-initial flex flex-row justify-end text-md md:text-lg">
+        <ULink
+            id="extensions-link"
+            active-class="bg-gradient-to-r from-sky-700 to-sky-600"
+            class="w-full h-full flex items-end text-center justify-end pr-2"
+            inactive-class="bg-gradient-to-r from-sky-700 to-sky-600"
+            to="/extensions"
+        > Extensions
+        </ULink>
+        <ULink
+            id="rules-link"
+            active-class="bg-gradient-to-r from-sky-600 to-sky-500"
+            class="w-full h-full flex items-end text-center justify-center pr-2"
+            inactive-class="bg-gradient-to-r from-sky-600 to-sky-500"
+            to="/rules"
+        > Rules
+        </ULink>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-
 </script>
 
-<style lang="scss">
-$sm: 320px;
-$md: 768px;
-$lg: 1024px;
-$xl: 1280px;
-$xxl: 1536px;
-
-.header {
-  width: 100%;
-
-  color: white;
-  background: radial-gradient(circle at 81.9% 53.5%, rgb(173, 53, 53) 16.3%, rgb(240, 60, 60) 100.2%);
-  border-bottom-left-radius: 50px;
-  border-bottom-right-radius: 50px;
-
-  font-size: 10px;
-
-  @media screen and (min-width: $md){
-    font-size: 15px;
-  }
-  @media screen and (min-width: $lg ) {
-    font-size: 20px;
-  }
-
-  .main-navbar {
-    width: 100%;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-
-    .logo {
-      width: 40%;
-    }
-
-    .menu {
-      width: 40%;
-      display: flex;
-      justify-content: flex-end;
-      gap: 30px;
-    }
-  }
-}
+<style>
 </style>

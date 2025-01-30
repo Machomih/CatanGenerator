@@ -1,92 +1,109 @@
-import {optimizeMap} from "./Optimizator"
+import getNeighbors from "~/server/utils/functions";
 
-let globalNumberArray: Array<number> = []
-let globalRowArray: Array<number> = []
+export class Generator {
 
-class HexRow {
-    size: number = 0;
-    hexes: Array<Hex> = [];
+    private globalRowSizes: number[] = []
+    private globalHexArray: string[] = []
+    private globalNumberArray: number[] = []
+    private numberMap: number[][] = []
 
-    push(hex: Hex) {
-        this.hexes.push(hex);
+    private sixEightArray: number[] = [6, 6, 8, 8]
+    private twoTwelveArray: number[] = [2, 12]
+
+    public generateNumberList(sixEightRule: boolean, twoTwelveRule: boolean, desertRule: boolean): Array<number> {
+        let numberArray: number[] = []
+        if (desertRule || sixEightRule || twoTwelveRule) {
+            if (desertRule) {
+                const middleRow = this.globalRowSizes.length / 2
+                const middleOfTheBoard: number = this.globalRowSizes[middleRow] / 2
+                this.numberMap[middleRow][middleOfTheBoard] = 0;
+            }
+
+            if (sixEightRule) {
+                this.placeRestrictedNumbers(6)
+            }
+
+            if (twoTwelveRule) {
+                this.placeRestrictedNumbers(2)
+            }
+
+        }
+        else numberArray = this.generateRandomList(this.globalNumberArray)
+
+        return numberArray
     }
-}
 
-class Hex {
-    name: string = "";
-    number: number = 0;
-    bullets: number = 0;
-}
 
-export function createMap(rowSizes: Array<number>,
-                          hexArray: Array<string>,
-                          numberArray: Array<number>,
-                          avoidAdjacentSixAndEight: boolean = false,
-                          avoidAdjacentTwoAndTwelve: boolean = false): Array<HexRow> {
-    const hexRows: Array<HexRow> = [];
-    const hexes: Array<Hex> = generateHexEntries(hexArray, numberArray);
+    public generateHexesList() {
+        return this.generateRandomList(this.globalHexArray)
+    }
 
-    globalRowArray = rowSizes
-    let hexIndex = 0;
+    public getBullets(hexNumber: number): number {
+        let number = 0;
+        if (hexNumber > 7) number = 13 - hexNumber;
+        if (hexNumber < 7 && hexNumber != 0) number = hexNumber - 1;
+        return number
+    }
 
-    for (const rowSize of rowSizes) {
-        const hexRow = new HexRow();
-        hexRow.size = rowSize;
+    private generateRandomList<K>(inputArray: Array<K>): Array<K> {
+        // Shuffle the list using Fisher-Yates algorithm
+        for (let i = inputArray.length - 1; i > 0; i--) {
+            const randomIndex = Math.floor(Math.random() * (i + 1));
+            [inputArray[i], inputArray[randomIndex]] = [inputArray[randomIndex], inputArray[i]];
+        }
+        return inputArray;
+    }
 
-        for (let i = 0; i < rowSize; i++) {
-            hexRow.push(hexes[hexIndex++] || new Hex());
+    private placeRestrictedNumbers(twoOrSix: number): void {
+        let restrictedNumbers: number[] = []
+        if (twoOrSix === 2) restrictedNumbers = this.twoTwelveArray;
+        else if (twoOrSix === 6) restrictedNumbers = this.sixEightArray;
+
+        for (const restrictedNumber of restrictedNumbers) {
+            const [row, col] = this.checkPassingConditions(twoOrSix);
+            this.numberMap[row][col] = restrictedNumber
+        }
+    }
+
+
+    private checkPassingConditions(twoOrSix: number): number[] {
+        let passingConditions: boolean = false;
+        const restrictedNumbers: number[] = []
+
+        if (twoOrSix === 2) {
+            restrictedNumbers.push(2)
+            restrictedNumbers.push(12)
+        }
+        if (twoOrSix === 6) {
+            restrictedNumbers.push(6)
+            restrictedNumbers.push(8)
         }
 
-        hexRows.push(hexRow);
-    }
+        let [row, col] = [-1, -1]
+        while (!passingConditions) {
+            [row, col] = this.getRandomPositions();
+            // Verify if position generated is empty
+            if (this.numberMap[row][col] !== undefined)
+                continue
 
-    if(avoidAdjacentSixAndEight) {
-        optimizeMap(globalRowArray, globalNumberArray)
-    }
-
-    return hexRows;
-}
-
-function generateHexEntries(hexArray: Array<string>, numberArray: Array<number>): Array<Hex> {
-    const hexTiles = generateRandomList(hexArray);
-    const numbers = generateRandomList(numberArray);
-    const hexEntries: Array<Hex> = [];
-
-    globalNumberArray = numbers
-    let numberIndex = 0;
-
-    for (const number of numbers) {
-        const hex = new Hex();
-        hex.number = number;
-
-        // Assign hexTiles, add desertHex for 0
-        if (number === 0) {
-            hex.name = "desertHex";
-        } else if (numberIndex < numbers.length) {
-            hex.name = hexTiles[numberIndex++];
+            const neighbors = getNeighbors(row, col)
+            // Verify if neighbors are not 6 or 8
+            for (const neighbor of neighbors) {
+                const neighborRow = neighbor[0]
+                const neighborCol = neighbor[1]
+                if (this.numberMap[neighborRow][neighborCol] === restrictedNumbers[0] || this.numberMap[neighborRow][neighborCol] === restrictedNumbers[1]) {
+                    break
+                }
+                passingConditions = true;
+            }
         }
-        hex.bullets = getBullets(hex.number)
-
-        hexEntries.push(hex);
+        return [row, col];
     }
 
-    return hexEntries;
-}
+    private getRandomPositions(): number[] {
+        const randomRow = Math.floor(Math.random() * this.globalRowSizes.length)
+        const randomColumn = Math.floor(Math.random() * this.globalRowSizes[randomRow])
 
-function generateRandomList<K>(inputArray: Array<K>): Array<K> {
-
-    // Shuffle the list using Fisher-Yates algorithm
-    for (let i = inputArray.length - 1; i > 0; i--) {
-        const randomIndex = Math.floor(Math.random() * (i + 1));
-        [inputArray[i], inputArray[randomIndex]] = [inputArray[randomIndex], inputArray[i]];
+        return [randomRow, randomColumn]
     }
-
-    return inputArray;
-}
-
-function getBullets(hexNumber: number) {
-    let number = 0;
-    if (hexNumber > 7) number = 13 - hexNumber;
-    if (hexNumber < 7 && hexNumber != 0) number = hexNumber - 1;
-    return number
 }

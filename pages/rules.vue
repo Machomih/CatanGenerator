@@ -1,9 +1,5 @@
 <template>
-  <div>
-    <footer>
-      THIS IS THE SPARTA
-    </footer>
-  </div>
+
 </template>
 
 <script lang="ts" setup>

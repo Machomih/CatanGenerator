@@ -1,64 +1,75 @@
 <template>
-  <div>
-    <div class="config-menu">
-      <div class="config-buttons">
-        <form action="">
-          <p class="text">Number of players</p>
-          <div class="number-of-players">
-            <label for="4players" class="label">2-4 Players</label>
-            <input id="4players" type="radio" name="4players" value="4" required>
-            <label for="6players" class="label">5-6 Players</label>
-            <input id="6players" type="radio" name="6players" value="6" required>
-          </div>
+  <div class="w-full h-full flex flex-col">
+    <UButton
+        :ui="{rounded: 'rounded-full'}" class="w-52 self-center justify-center mb-5" icon="system-uicons:shuffle"
+        label="Generate" size="sm"
+    />
+    <div class="w-full h-full flex flex-col items-start ml-10 gap-3 text-lg">
+      <div>
+        <label for="checkbox-rules">Rules:</label>
+        <div id="checkbox-rules">
+          <UCheckbox v-model="sixEight" disabled label="6&8 can touch" name="SixEight"/>
+          <UCheckbox v-model="twoTwelve" disabled label="2&12 can touch" name="TwoTwelve"/>
+          <UCheckbox v-model="desert" label="Dessert in the middle" name="Desert"/>
+        </div>
 
-          <p class="text">Extension</p>
-          <div class="extensions">
-            <select id="game" class="games">
-              <option value="base-game">Base Game</option>
-              <option value="seafarers">Seafarers</option>
-              <option value="c&k">Cities and Knights</option>
-              <option value="e&p">Explorers and Pirates</option>
-              <option value="t&b">Traders and Barbarians</option>
-              <option value="aoe">Age of Enlightenment</option>
-            </select>
-          </div>
-
-          <p class="text">Scenarios</p>
-          <div class="scenarios">
-            <select id="scenario" class="games">
-              <option value="default">Default</option>
-              <option value="random">Random</option>
-            </select>
-          </div>
-        </form>
       </div>
-      <div class="generate-button">
-        <p class="placeholder">This is where the buttons will come</p>
+      <div>
+        <label for="players-radio">Number of players:</label>
+        <URadioGroup
+            id="players-radio"
+            v-model="selectedNumberOfPlayers"
+            :options="options"
+        />
+      </div>
+      <div>
+        <label for="extension-select">Choose an extension</label>
+        <USelect
+            id="extension-select"
+            v-model="selectedExtension"
+            :options="extensions"
+            option-attribute="name"
+        />
+      </div>
+      <div>
+        <label for="scenario-select">Choose a scenario</label>
+        <USelect
+            id="scenario-select"
+            v-model="selectedScenario"
+            :options="scenarios"
+            option-attribute="name"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+// Local state
+const sixEight = ref(false);
+const twoTwelve = ref(false);
+const desert = ref(false);
+const selectedNumberOfPlayers = ref("4");
+const selectedExtension = ref("base");
+const selectedScenario = ref("default");
+
+// Options
+const options = [
+  {value: "4", label: "3-4"},
+  {value: "6", label: "5-6"},
+];
+
+const extensions = [
+  {name: "Base Game", value: "base"},
+  {name: "Seafarers", value: "sf", disabled: true},
+  {name: "Cities & Knights", value: "c&k"},
+];
+
+const scenarios = [
+  {name: "Default", value: "default"},
+  {name: "Random", value: "random"},
+];
 
 </script>
 
-<style>
-  .config-menu {
-  width: 30%;
-  height: 100%;
-
-  border-left: 5px solid black;
-  padding-left: 2px;
-}
-
-.config-buttons {
-  width: 100%;
-  height: 60%;
-}
-
-.generate-button {
-  width: 100%;
-  height: 40%;
-}
-</style>
+<style></style>

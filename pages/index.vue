@@ -1,26 +1,17 @@
 <template>
-  <div class="main-page">
-    <Board/>
-<!--    <ConfigMenu/>-->
+  <div class="w-full h-fit flex flex-col lg:flex-row align-center justify-center mt-5 gap-5">
+    <div id="board-component" class="w-full lg:w-3/5 ">
+      <Board/>
+    </div>
+    <div id="config-component" class="w-full lg:w-2/5 h-fit">
+      <ConfigMenu/>
+    </div>
   </div>
 </template>
 
-<script lang="ts" setup>
+<script>
 
 </script>
 
-<style>
-body,
-html {
-  margin: 0;
-  width: 100%;
-  height: 100%;
-
-  background: linear-gradient(-225deg, #5D9FFF 0%, #B8DCFF 48%, #6BBBFF 100%);
-}
-
-.main-page {
-  display: flex;
-  flex-flow: row;
-}
+<style lang="scss">
 </style>
